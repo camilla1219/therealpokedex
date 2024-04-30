@@ -1,26 +1,35 @@
-import logo from './logo.svg';
+import { Component } from 'react';
 import './App.css';
+import { PokeList, DetailView, Pokemon} from './components';
+import Navbar from './components/Navbar';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <b>I AM HERE</b>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends Component {
+  constructor () {
+    super()
+    this.state={
+      pokemon: {}
+    }
+    this.handleOnClick = this.handleOnClick.bind(this)
+  }
+
+  handleOnClick(id){
+    fetch(`https://pokeapi.co/api/v2/pokemon/${id}/`)
+    .then(response => response.json())
+    .then(data => {
+      const pokemon = new Pokemon(data)
+      this.setState({pokemon})
+    }) 
+    .catch(err => console.log(err))
+  }
+  render () {
+    return (
+      <div className='App'>
+        <Navbar></Navbar>
+        <PokeList handleOnClick={this.handleOnClick}/>
+        <DetailView pokemon={this.state.pokemon}/>
+      </div>
+    )
+  }
 }
 
 export default App;
